@@ -18,6 +18,18 @@ Criando Migrations
 npm run -- knex migrate:make create-documents
 ```
 
+Rodar Migrations
+
+```bash
+npm run knex migrate:latest
+```
+
+Desfazer Migrations
+
+```bash
+npm run knex migrate:rollback
+```
+
 Rodando Projeto
 
 ```bash
