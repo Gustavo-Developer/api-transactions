@@ -55,4 +55,75 @@ describe("Transactions routes", () => {
       }),
     ]);
   });
+
+  it("Deve conseguir listar transacão especifica", async () => {
+    const createTransactionResponse = await request(app.server)
+      .post("/transactions")
+      .send({
+        title: "Nova Transacão",
+        amount: 3000,
+        type: "credit",
+      })
+      .expect(201);
+
+    const cookies = createTransactionResponse.get("Set-Cookie");
+
+    const listTransactionsResponse = await request(app.server)
+      .get("/transactions")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    const transactionId = listTransactionsResponse.body.transactions[0].id;
+
+    const getTransactionsResponse = await request(app.server)
+      .get(`/transactions/${transactionId}`)
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(getTransactionsResponse.body.transaction).toEqual(
+      expect.objectContaining({
+        title: "Nova Transacão",
+        amount: 3000,
+      })
+    );
+  });
+
+  it("Deve conseguir listar summary", async () => {
+    const createTransactionResponse = await request(app.server)
+      .post("/transactions")
+      .send({
+        title: "Transacão de Credito",
+        amount: 5000,
+        type: "credit",
+      })
+      .expect(201);
+
+    const cookies = createTransactionResponse.get("Set-Cookie");
+
+    await request(app.server)
+      .post("/transactions")
+      .set("Cookie", cookies)
+      .send({
+        title: "Transacão de Debito",
+        amount: 2000,
+        type: "debit",
+      })
+      .expect(201);
+
+    const listTransactionsResponse = await request(app.server)
+      .get("/transactions")
+      .set("Cookie", cookies)
+      .expect(200);
+
+    const transactionId = listTransactionsResponse.body.transactions[0].id;
+
+    const summaryResponse = await request(app.server)
+      .get(`/transactions/summary`)
+      .set("Cookie", cookies)
+      .expect(200);
+
+    expect(summaryResponse.body.summary).toEqual({
+      amount: 3000,
+    });
+  });
 });
