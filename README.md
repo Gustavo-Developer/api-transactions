@@ -41,3 +41,9 @@ Rodando Testes
 ```bash
 npm run test
 ```
+
+Build
+
+- Render
+- Fly
+- RailWay
