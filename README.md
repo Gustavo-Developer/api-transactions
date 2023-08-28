@@ -35,3 +35,9 @@ Rodando Projeto
 ```bash
 npm run dev
 ```
+
+Rodando Testes
+
+```bash
+npm run test
+```
